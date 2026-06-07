@@ -1,0 +1,74 @@
+@model IEnumerable<HotelManagement.Models.Room>
+
+@{
+    ViewData["Title"] = "Room List";
+}
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>Rooms</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Create" class="btn btn-primary">Add New Room</a>
+            <a asp-action="AvailableRooms" class="btn btn-info">View Available Rooms</a>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Room Number</th>
+                        <th>Type</th>
+                        <th>Capacity</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var room in Model)
+                    {
+                        <tr>
+                            <td>@room.RoomNumber</td>
+                            <td>@room.RoomType?.TypeName</td>
+                            <td>@room.Capacity</td>
+                            <td>$@room.Price.ToString("F2")</td>
+                            <td>
+                                <span class="badge bg-@GetStatusColor(room.Status)">@room.Status</span>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@room.RoomID" class="btn btn-sm btn-info">View</a>
+                                <a asp-action="Edit" asp-route-id="@room.RoomID" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@room.RoomID" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No rooms found. <a asp-action="Create">Add a new room</a>
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetStatusColor(HotelManagement.Models.RoomStatus status)
+    {
+        return status switch
+        {
+            HotelManagement.Models.RoomStatus.Available => "success",
+            HotelManagement.Models.RoomStatus.Occupied => "danger",
+            HotelManagement.Models.RoomStatus.Maintenance => "warning",
+            HotelManagement.Models.RoomStatus.Reserved => "info",
+            _ => "secondary"
+        };
+    }
+}
