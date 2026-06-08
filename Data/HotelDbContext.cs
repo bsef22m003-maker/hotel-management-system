@@ -11,7 +11,7 @@ namespace HotelManagement.Data
 
         public DbSet<Guest> Guests { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<RoomType> RoomTypes { get; set; }
+        // ✂ Removed: DbSet<RoomType> RoomTypes (RoomType is now a string on Room)
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Staff> Staff { get; set; }
@@ -33,24 +33,18 @@ namespace HotelManagement.Data
                 entity.Property(e => e.Country).HasMaxLength(100);
             });
 
-            // RoomType Configuration
-            modelBuilder.Entity<RoomType>(entity =>
-            {
-                entity.HasKey(e => e.RoomTypeID);
-                entity.Property(e => e.TypeName).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Description).HasMaxLength(500);
-                entity.Property(e => e.BasePrice).HasPrecision(10, 2);
-            });
+            // ✂ Removed: RoomType entity configuration (no longer a separate table)
 
             // Room Configuration
             modelBuilder.Entity<Room>(entity =>
             {
                 entity.HasKey(e => e.RoomID);
                 entity.Property(e => e.RoomNumber).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.RoomType).HasMaxLength(100); // ✅ RoomType is now a plain string column
                 entity.Property(e => e.Price).HasPrecision(10, 2);
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.ImageUrl).HasMaxLength(500);
-                entity.HasOne(e => e.RoomType).WithMany(rt => rt.Rooms).HasForeignKey(e => e.RoomTypeID);
+                // ✂ Removed: .HasOne(e => e.RoomType).WithMany(...).HasForeignKey(...)
             });
 
             // Booking Configuration

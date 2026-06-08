@@ -34,7 +34,7 @@
                     {
                         <tr>
                             <td>@room.RoomNumber</td>
-                            <td>@room.RoomType?.TypeName</td>
+                            <td>@room.RoomType</td> @* ✅ Was: room.RoomType?.TypeName *@
                             <td>@room.Capacity</td>
                             <td>$@room.Price.ToString("F2")</td>
                             <td>

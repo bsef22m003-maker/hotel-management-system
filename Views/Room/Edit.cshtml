@@ -21,12 +21,11 @@
                     <span asp-validation-for="RoomNumber" class="text-danger"></span>
                 </div>
 
+                {{!-- ✅ RoomTypeID dropdown → RoomType plain text input --}}
                 <div class="mb-3">
-                    <label asp-for="RoomTypeID" class="form-label">Room Type</label>
-                    <select asp-for="RoomTypeID" class="form-control" asp-items="ViewBag.RoomTypes as IEnumerable<SelectListItem>" required>
-                        <option value="">-- Select Room Type --</option>
-                    </select>
-                    <span asp-validation-for="RoomTypeID" class="text-danger"></span>
+                    <label asp-for="RoomType" class="form-label">Room Type</label>
+                    <input asp-for="RoomType" class="form-control" placeholder="e.g. Single, Double, Suite" required />
+                    <span asp-validation-for="RoomType" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
