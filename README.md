@@ -157,6 +157,7 @@ hotel-management-system/
 ## API Endpoints (if applicable)
 
 ### Room Endpoints
+
 - `GET /api/rooms` - List all rooms
 - `GET /api/rooms/{id}` - Get room details
 - `POST /api/rooms` - Create new room
@@ -164,6 +165,7 @@ hotel-management-system/
 - `DELETE /api/rooms/{id}` - Delete room
 
 ### Booking Endpoints
+
 - `GET /api/bookings` - List all bookings
 - `GET /api/bookings/{id}` - Get booking details
 - `POST /api/bookings` - Create new booking
@@ -173,11 +175,13 @@ hotel-management-system/
 ## Troubleshooting
 
 ### Database Connection Issues
+
 - Verify SQL Server is running
 - Check connection string in `appsettings.json`
 - Ensure database user has proper permissions
 
 ### Migration Errors
+
 ```bash
 dotnet ef migrations remove
 dotnet ef database drop
@@ -185,7 +189,9 @@ dotnet ef database update
 ```
 
 ### Port Already in Use
+
 Change the port in `launchSettings.json` or use:
+
 ```bash
 dotnet run --urls "https://localhost:8080"
 ```

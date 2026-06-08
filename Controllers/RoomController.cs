@@ -11,12 +11,11 @@ namespace HotelManagement.Controllers
     public class RoomController : Controller
     {
         private readonly IRoomRepository _roomRepository;
-        private readonly IRepository<RoomType> _roomTypeRepository;
 
-        public RoomController(IRoomRepository roomRepository, IRepository<RoomType> roomTypeRepository)
+        // ✂ Removed: IRepository<RoomType> _roomTypeRepository
+        public RoomController(IRoomRepository roomRepository)
         {
             _roomRepository = roomRepository;
-            _roomTypeRepository = roomTypeRepository;
         }
 
         // GET: Room/Index
@@ -45,24 +44,23 @@ namespace HotelManagement.Controllers
         }
 
         // GET: Room/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            ViewBag.RoomTypes = await _roomTypeRepository.GetAllAsync();
+            // ✂ Removed: ViewBag.RoomTypes (no longer needed)
             return View();
         }
 
         // POST: Room/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RoomNumber,RoomTypeID,Capacity,Price,Status,Description,ImageUrl")] Room room)
+        public async Task<IActionResult> Create([Bind("RoomNumber,RoomType,Capacity,Price,Status,Description,ImageUrl")] Room room)
         {
+            // ✅ RoomTypeID → RoomType (string field now)
             if (ModelState.IsValid)
             {
-                room.CreatedDate = DateTime.Now;
-                await _roomRepository.AddAsync(room);
+                await _roomRepository.AddRoomAsync(room); // ✅ Uses AddRoomAsync (handles CreatedDate & default Status)
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.RoomTypes = await _roomTypeRepository.GetAllAsync();
             return View(room);
         }
 
@@ -74,15 +72,16 @@ namespace HotelManagement.Controllers
             {
                 return NotFound();
             }
-            ViewBag.RoomTypes = await _roomTypeRepository.GetAllAsync();
+            // ✂ Removed: ViewBag.RoomTypes
             return View(room);
         }
 
         // POST: Room/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RoomID,RoomNumber,RoomTypeID,Capacity,Price,Status,Description,ImageUrl,CreatedDate")] Room room)
+        public async Task<IActionResult> Edit(int id, [Bind("RoomID,RoomNumber,RoomType,Capacity,Price,Status,Description,ImageUrl,CreatedDate")] Room room)
         {
+            // ✅ RoomTypeID → RoomType (string field now)
             if (id != room.RoomID)
             {
                 return NotFound();
@@ -93,7 +92,7 @@ namespace HotelManagement.Controllers
                 await _roomRepository.UpdateAsync(room);
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.RoomTypes = await _roomTypeRepository.GetAllAsync();
+            // ✂ Removed: ViewBag.RoomTypes
             return View(room);
         }
 

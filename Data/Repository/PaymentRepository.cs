@@ -53,30 +53,34 @@ namespace HotelManagement.Data.Repository
                 .OrderByDescending(p => p.PaymentDate)
                 .ToListAsync();
         }
+        public async Task<decimal> GetTotalRevenueAsync()
+        {
+            var total = await _context.Payments
+                .Where(p => p.Status == PaymentStatus.Completed)
+                .Select(p => (double)p.Amount)
+                .SumAsync();
+            return (decimal)total;
+        }
+
+        public async Task<decimal> GetMonthlyRevenueAsync(int month, int year)
+        {
+            var total = await _context.Payments
+                .Where(p => p.Status == PaymentStatus.Completed &&
+                    p.PaymentDate.Month == month &&
+                    p.PaymentDate.Year == year)
+                .Select(p => (double)p.Amount)
+                .SumAsync();
+            return (decimal)total;
+        }
 
         public async Task<Payment> GetPaymentWithDetailsAsync(int paymentId)
         {
             return await _context.Payments
                 .Include(p => p.Booking)
-                .Include(p => p.Booking.Guest)
-                .Include(p => p.Booking.Room)
+                    .ThenInclude(b => b.Room)
+                .Include(p => p.Booking)
+                    .ThenInclude(b => b.Guest)
                 .FirstOrDefaultAsync(p => p.PaymentID == paymentId);
-        }
-
-        public async Task<decimal> GetTotalRevenueAsync()
-        {
-            return await _context.Payments
-                .Where(p => p.Status == PaymentStatus.Completed)
-                .SumAsync(p => p.Amount);
-        }
-
-        public async Task<decimal> GetMonthlyRevenueAsync(int month, int year)
-        {
-            return await _context.Payments
-                .Where(p => p.Status == PaymentStatus.Completed &&
-                    p.PaymentDate.Month == month &&
-                    p.PaymentDate.Year == year)
-                .SumAsync(p => p.Amount);
         }
     }
 }
